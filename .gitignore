@@ -1,6 +1,14 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+# iPython notebook files that contains too much binary data
+*.ipynb
+# Image files
+*.png
+*.img
+*.jpg
+*.svg
+*.bmp
 
 # C extensions
 *.so
