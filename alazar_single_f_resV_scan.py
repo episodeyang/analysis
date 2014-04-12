@@ -6,6 +6,13 @@ from slab import dataanalysis
 import numpy as np
 import util
 
+import re
+def filter_ramp_key(keyStrings):
+    for key in keyStrings:
+        if re.search('(ramp_\d\d\d)', keyString) != keyString:
+            keyString
+
+
 def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
     indStr = indexString(stack_index)
     stack_prefix = "stack_" + indStr + '.'
@@ -15,10 +22,11 @@ def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
     notes = cache.get(stack_prefix+'notes')
 
     frequency = cache.get(stack_prefix+'frequency')
+    rampList = cache.index(stack_prefix)
     rampList = ['ramp_000', 'ramp_001', 'ramp_002', 'ramp_003', 'ramp_004', 'ramp_005']
 
     if callback != None:
-        callback(stackType, startTime, notes, fpts, mags, phases, trapStart, trapEnd)
+        callback(stackType, startTime, notes, frequency, rampList, phases, trapStart, trapEnd)
 
     return stackType, startTime, notes, fpts, mags, phases
 
