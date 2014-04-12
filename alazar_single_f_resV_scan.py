@@ -9,7 +9,7 @@ import util
 import re
 def is_ramp_key(keyString):
     try:
-        return re.search(ur'(ramp_\d\d\d)', keyString, re.UNICODE) == keyString
+        return re.search(ur'(ramp_\d\d\d)', keyString, re.UNICODE).group() == keyString
     except AttributeError, e:
         return False
 
@@ -31,23 +31,25 @@ def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
     # Try not to output all the data. Just want to plot each first.
     for rampKey in rampList:
         # mag_stacks[ind].append( cache.get(stack_prefix + rampKey + '.mags') )
-        mags = cache.get(stack_prefix + rampKey + '.mags')
-        phases = cache.get(stack_prefix + rampKey + '.phases')
-        # I = cache.get(stack_prefix + rampKey + '.I')
-        # Q = cache.get(stack_prefix + rampKey + '.Q')
+        # mags = cache.get(stack_prefix + rampKey + '.mags')
+        # phases = cache.get(stack_prefix + rampKey + '.phases')
+        I = cache.get(stack_prefix + rampKey + '.I')
+        Q = cache.get(stack_prefix + rampKey + '.Q')
         resVs = cache.get(stack_prefix + rampKey + '.resVs')
         rampHighs = cache.get(stack_prefix + rampKey + '.rampHighs')
         rampLows = cache.get(stack_prefix + rampKey + '.rampLows')
         if callback != None:
             callback(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
 
-    return stackType, startTime, notes, fpts, mags, phases
+    return stackType, startTime, notes, frequency, I, Q 
 
 def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs):
 
+    rampHigh = rampHighs[0]
+    rampLow = rampLows[0]
     plt.subplot(121)
     plt.imshow(I, aspect='auto', interpolation='none', origin = 'lower', cmap = 'gist_stern',
-           extent = [rampHigh, 2*rampLow-rampHigh , min(fpts), max(fpts)])
+           extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]])
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
@@ -57,7 +59,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
 
     plt.subplot(122)
     plt.imshow(Q, aspect='auto', interpolation='none', origin = 'lower', cmap = 'gist_stern',
-           extent = [rampHigh, 2*rampLow-rampHigh, min(fpts), max(fpts)])
+           extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]])
     plt.title('alazar nwa Q channel')
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
@@ -72,7 +74,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.subplot(121)
     mags = np.sqrt(I**2 + Q**2)
     plt.imshow(mags, aspect='auto', interpolation='none', origin = 'lower',
-           extent = [rampHigh, 2*rampLow-rampHigh, min(fpts), max(fpts)], cmap = 'YlOrRd')
+           extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
     plt.title('Magnitude')
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
@@ -85,10 +87,10 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     for Irow, Qrow in zip(I, Q):
         phases.append(map(util.phase, zip(Irow, Qrow)))
     phases = np.array(phases)
-    print shape(phases)
+    print np.shape(phases)
     plt.subplot(122)
     plt.imshow(phases, aspect='auto', interpolation='none', origin = 'lower',
-           extent = [rampHigh, 2*rampLow-rampHigh, min(fpts), max(fpts)], cmap = 'YlOrRd')
+           extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
     plt.title('phase')
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
