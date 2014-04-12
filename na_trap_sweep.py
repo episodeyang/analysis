@@ -8,12 +8,13 @@ import util
 
 def get_na_trap_sweep(cache, stack_index, callback=None):
     indStr = indexString(stack_index)
+    stack_prefix = "stack_" + indStr + '.'
+
     stackType = cache.get(stack_prefix+'type')
     startTime = cache.get(stack_prefix+'startTime')
     notes = cache.get(stack_prefix+'notes')
     fpts = cache.get(stack_prefix+'fpts')
     mags = cache.get(stack_prefix+'mags')
-    #cache.add(stack_prefix+"mags", mags)
     phases = cache.get(stack_prefix+'phases')
     trapStart = cache.get(stack_prefix+'trapStart')
     trapEnd = cache.get(stack_prefix+'trapEnd')
@@ -26,13 +27,13 @@ def get_na_trap_sweep(cache, stack_index, callback=None):
 def na_trap_sweep_plotter(stackType, startTime, notes, fpts, mags, phases, trapStart, trapEnd):
     plt.subplot(121)
     midInd = len(mags)/2;
-    plt.imshow(transpose(mags[:midInd+1]), aspect='auto', interpolation='none', cmap = 'gist_rainbow',
+    plt.imshow(np.transpose(mags[:midInd+1]), aspect='auto', interpolation='none', cmap = 'gist_rainbow',
            origin = 'lower', extent = [trapStart, trapEnd, min(fpts), max(fpts)])
     plt.subplot(122)
-    plt.imshow(transpose(mags[midInd+1:]), aspect='auto', interpolation='none', cmap = 'gist_rainbow',
+    plt.imshow(np.transpose(mags[midInd+1:]), aspect='auto', interpolation='none', cmap = 'gist_rainbow',
            origin = 'lower', extent = [trapEnd, trapStart, min(fpts), max(fpts)])
     # locator_params(nbins=10)
-    plt.set_title('trap V vs transmission')
+    plt.title('trap V vs transmission')
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.ylabel('Frequency (Hz)')

@@ -8,6 +8,7 @@ import util
 
 def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
     indStr = indexString(stack_index)
+    stack_prefix = "stack_" + indStr + '.'
 
     stackType = cache.get(stack_prefix+'type')
     startTime = cache.get(stack_prefix+'startTime')

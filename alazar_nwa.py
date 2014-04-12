@@ -54,7 +54,7 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     plt.colorbar()
 
     fig_name = r'./raw figures/{},({},{}), IQ voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
-    dataanalysis.save_styled_fig(fig_name, 'wide')
+    dataanalysis.save_styled_fig(fig_name, 'r2')
     plt.show()
 
     plt.subplot(121)
@@ -85,7 +85,7 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     plt.colorbar()
 
     fig_name = r'./raw figures/{},({},{}), Mag Phase voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
-    dataanalysis.save_styled_fig(fig_name, 'wide')
+    dataanalysis.save_styled_fig(fig_name, 'r2')
     plt.show()
 
     return mags, phases
