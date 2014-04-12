@@ -7,11 +7,11 @@ import numpy as np
 import util
 
 import re
-def filter_ramp_key(keyStrings):
-    for key in keyStrings:
-        if re.search('(ramp_\d\d\d)', keyString) != keyString:
-            keyString
-
+def is_ramp_key(keyString):
+    try:
+        return re.search(ur'(ramp_\d\d\d)', keyString, re.UNICODE) == keyString
+    except AttributeError, e:
+        return False
 
 def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
     indStr = indexString(stack_index)
@@ -22,15 +22,28 @@ def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
     notes = cache.get(stack_prefix+'notes')
 
     frequency = cache.get(stack_prefix+'frequency')
-    rampList = cache.index(stack_prefix)
-    rampList = ['ramp_000', 'ramp_001', 'ramp_002', 'ramp_003', 'ramp_004', 'ramp_005']
-
-    if callback != None:
-        callback(stackType, startTime, notes, frequency, rampList, phases, trapStart, trapEnd)
+    # now the cache.index function takes care of the trailing '.' well
+    # no need to put the [:-1] there.
+    # but I like the explicity of it.
+    rampList = filter(is_ramp_key, cache.index(stack_prefix[:-1]))
+    print "filtered key list", rampList
+    # rampList = ['ramp_000', 'ramp_001', 'ramp_002', 'ramp_003', 'ramp_004', 'ramp_005']
+    # Try not to output all the data. Just want to plot each first.
+    for rampKey in rampList:
+        # mag_stacks[ind].append( cache.get(stack_prefix + rampKey + '.mags') )
+        mags = cache.get(stack_prefix + rampKey + '.mags')
+        phases = cache.get(stack_prefix + rampKey + '.phases')
+        # I = cache.get(stack_prefix + rampKey + '.I')
+        # Q = cache.get(stack_prefix + rampKey + '.Q')
+        resVs = cache.get(stack_prefix + rampKey + '.resVs')
+        rampHighs = cache.get(stack_prefix + rampKey + '.rampHighs')
+        rampLows = cache.get(stack_prefix + rampKey + '.rampLows')
+        if callback != None:
+            callback(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
 
     return stackType, startTime, notes, fpts, mags, phases
 
-def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow):
+def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs):
 
     plt.subplot(121)
     plt.imshow(I, aspect='auto', interpolation='none', origin = 'lower', cmap = 'gist_stern',
@@ -52,7 +65,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, Q, I, fpts, r
     plt.ylabel('Frequency(Hz)')
     plt.colorbar()
 
-    fig_name = r'.\\raw figures\\{},({},{}), IQ voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
+    fig_name = r'./raw figures/{},({},{}), IQ voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'wide')
     plt.show()
 
@@ -83,7 +96,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, Q, I, fpts, r
     plt.ylabel('Frequency(Hz)')
     plt.colorbar()
 
-    fig_name = r'.\\raw figures\\{},({},{}), Mag Phase voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
+    fig_name = r'./raw figures/{},({},{}), Mag Phase voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'wide')
     plt.show()
 
