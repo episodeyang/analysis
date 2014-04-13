@@ -36,9 +36,11 @@ def get_alazar_nwa(cache, stack_index, callback=None):
     cache.set(stack_prefix+'mags', mags)
     cache.set(stack_prefix+'phases', phases)
 
-    return stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, mags, phases
+    return stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, mags, phases, resV
 
 def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, resV):
+
+    resV = float(resV)
 
     plt.subplot(121)
     plt.imshow(I, aspect='auto', interpolation='none', origin = 'lower', cmap = 'gist_stern',
@@ -47,13 +49,13 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
     plt.ylabel('Frequency (Hz)')
-    plt.title('alazar nwa I channel')
+    plt.title('alazar I @{:.3f}V'.format(resV))
     plt.colorbar()
 
     plt.subplot(122)
     plt.imshow(Q, aspect='auto', interpolation='none', origin = 'lower', cmap = 'gist_stern',
            extent = [rampHigh, 2*rampLow-rampHigh, min(fpts), max(fpts)])
-    plt.title('alazar nwa Q channel')
+    plt.title('alazar Q @{:.3f}V'.format(resV))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
@@ -68,7 +70,7 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     mags = np.sqrt(I**2 + Q**2)
     plt.imshow(mags, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, min(fpts), max(fpts)], cmap = 'YlOrRd')
-    plt.title('Magnitude')
+    plt.title('Magnitude @{:.3f}V'.format(resV))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
@@ -84,7 +86,7 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     plt.subplot(122)
     plt.imshow(phases, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, min(fpts), max(fpts)], cmap = 'YlOrRd')
-    plt.title('phase')
+    plt.title('Phase @{:.3f}V'.format(resV))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')

@@ -53,18 +53,18 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
-    plt.ylabel('Frequency (Hz)')
-    plt.title('alazar nwa I channel')
+    plt.ylabel('resonator volt')
+    plt.title('I @ {:.4f}GHz'.format(float(frequency)/1e9))
     plt.colorbar()
 
     plt.subplot(122)
     plt.imshow(Q, aspect='auto', interpolation='none', origin = 'lower', cmap = 'gist_stern',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]])
-    plt.title('alazar nwa Q channel')
+    plt.title('Q @ {:.4f}GHz'.format(float(frequency)/1e9))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
-    plt.ylabel('Frequency(Hz)')
+    plt.ylabel('resonator volt')
     plt.colorbar()
 
     fig_name = r'./raw figures/{},({},{}), IQ voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
@@ -75,11 +75,11 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     mags = np.sqrt(I**2 + Q**2)
     plt.imshow(mags, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
-    plt.title('Magnitude')
+    plt.title('Magnitude @ {:.4f}GHz'.format(float(frequency)/1e9))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
-    plt.ylabel('Frequency(Hz)')
+    plt.ylabel('resonator V')
     plt.colorbar()
 
 
@@ -91,11 +91,11 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.subplot(122)
     plt.imshow(phases, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
-    plt.title('phase')
+    plt.title('phase @ {:.4f}GHz'.format(float(frequency)/1e9))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
     plt.xlabel('Trap voltage (V)')
-    plt.ylabel('Frequency(Hz)')
+    plt.ylabel('resonator V')
     plt.colorbar()
 
     fig_name = r'./raw figures/{},({},{}), Mag Phase voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
