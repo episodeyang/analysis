@@ -13,7 +13,7 @@ def is_ramp_key(keyString):
     except AttributeError, e:
         return False
 
-def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
+def get_alazar_single_f_resV_scan(cache, stack_index, iterator=None, done=None):
     indStr = indexString(stack_index)
     stack_prefix = "stack_" + indStr + '.'
 
@@ -38,8 +38,11 @@ def get_alazar_single_f_resV_scan(cache, stack_index, callback=None):
         resVs = cache.get(stack_prefix + rampKey + '.resVs')
         rampHighs = cache.get(stack_prefix + rampKey + '.rampHighs')
         rampLows = cache.get(stack_prefix + rampKey + '.rampLows')
-        if callback != None:
-            callback(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
+        if iterator != None:
+            iterator(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
+    
+    if done != None:
+        done(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
 
     return stackType, startTime, notes, frequency, I, Q 
 
@@ -89,17 +92,17 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     phases = np.array(phases)
     print np.shape(phases)
     plt.subplot(122)
+    phases = np.array(phases)
+    print np.shape(phases)
+    plt.subplot(122)
+    phases = np.array(phases)
+    print np.shape(phases)
+    plt.subplot(122)
+    phases = np.array(phases)
+    print np.shape(phases)
+    plt.subplot(122)
     plt.imshow(phases, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
     plt.title('phase @ {:.4f}GHz'.format(float(frequency)/1e9))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
-    plt.xlabel('Trap voltage (V)')
-    plt.ylabel('resonator V')
-    plt.colorbar()
-
-    fig_name = r'./raw figures/{},({},{}), Mag Phase voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
-    dataanalysis.save_styled_fig(fig_name, 'wide')
-    plt.show()
-
-    return mags, phases
