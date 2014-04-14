@@ -70,7 +70,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.ylabel('resonator volt')
     plt.colorbar()
 
-    fig_name = r'./raw figures/{},({},{}), IQ voltage.png'.format(notes[-1][6:9], rampHigh, rampLow)
+    fig_name = r'./raw figures/({},{}), IQ voltage.png'.format(rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'wide')
     plt.show()
 
@@ -90,23 +90,18 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     for Irow, Qrow in zip(I, Q):
         phases.append(map(util.phase, zip(Irow, Qrow)))
     phases = np.array(phases)
-    print np.shape(phases)
-    plt.subplot(122)
-    phases = np.array(phases)
-    print np.shape(phases)
-    plt.subplot(122)
-    phases = np.array(phases)
-    print np.shape(phases)
-    plt.subplot(122)
-    phases = np.array(phases)
-    print np.shape(phases)
     plt.subplot(122)
     plt.imshow(phases, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
     plt.title('phase @ {:.4f}GHz'.format(float(frequency)/1e9))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
+    plt.xlabel('Trap voltage (V)')
+    plt.ylabel('resonator voltage (V)')
     plt.colorbar()
 
+    fig_name = r'./raw figures/({},{}), Mag Phase voltage.png'.format(rampHigh, rampLow)
+    dataanalysis.save_styled_fig(fig_name, 'wide')
     plt.show()
+
     return mags, phases
