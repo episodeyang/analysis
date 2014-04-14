@@ -106,3 +106,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.title('phase @ {:.4f}GHz'.format(float(frequency)/1e9))
     axes = plt.gca()
     axes.ticklabel_format(style = 'sci', useOffset=False)
+    plt.colorbar()
+
+    plt.show()
+    return mags, phases
