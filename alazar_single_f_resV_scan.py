@@ -25,7 +25,7 @@ def get_alazar_single_f_resV_scan(cache, stack_index, iterator=None, done=None):
     # now the cache.index function takes care of the trailing '.' well
     # no need to put the [:-1] there.
     # but I like the explicity of it.
-    rampList = filter(is_ramp_key, cache.index(stack_prefix[:-1]))
+    rampList = filter(is_ramp_key, cache.index(stack_prefix))
     print "filtered key list", rampList
     # rampList = ['ramp_000', 'ramp_001', 'ramp_002', 'ramp_003', 'ramp_004', 'ramp_005']
     # Try not to output all the data. Just want to plot each first.
