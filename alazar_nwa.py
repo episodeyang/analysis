@@ -31,14 +31,19 @@ def get_alazar_nwa(cache, stack_index, callback=None):
         resV = notes[-1][6:9]
 
     if callback != None:
-        mags, phases = callback(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, resV)
-
-    cache.set(stack_prefix+'mags', mags)
-    cache.set(stack_prefix+'phases', phases)
+        mags, phases = callback(stack_index, stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, resV)
+    try:
+        mags = cache.get(stack_prefix+'mags')
+    except:
+        cache.set(stack_prefix+'mags', mags)
+    try:
+        phases = cache.get(stack_prefix+'phases')
+    except:
+        cache.set(stack_prefix+'phases', phases)
 
     return stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, mags, phases, resV
 
-def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, resV):
+def alazar_nwa_plotter(stack_index, stackType, startTime, notes, Q, I, fpts, rampHigh, rampLow, resV):
 
     resV = float(resV)
 
@@ -62,7 +67,7 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     plt.ylabel('Frequency(Hz)')
     plt.colorbar()
 
-    fig_name = r'./raw figures/{},({},{}), IQ voltage.png'.format(resV, rampHigh, rampLow)
+    fig_name = r'./raw figures/{}_{},({},{}), IQ voltage.png'.format(stack_index, resV, rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'r2')
     plt.show()
 
@@ -93,7 +98,7 @@ def alazar_nwa_plotter(stackType, startTime, notes, Q, I, fpts, rampHigh, rampLo
     plt.ylabel('Frequency(Hz)')
     plt.colorbar()
 
-    fig_name = r'./raw figures/{},({},{}), Mag Phase voltage.png'.format(resV, rampHigh, rampLow)
+    fig_name = r'./raw figures/{}_{},({},{}), Mag Phase voltage.png'.format(stack_index, resV, rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'r2')
     plt.show()
 

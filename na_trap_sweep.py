@@ -20,11 +20,11 @@ def get_na_trap_sweep(cache, stack_index, callback=None):
     trapEnd = cache.get(stack_prefix+'trapEnd')
 
     if callback != None:
-        callback(stackType, startTime, notes, fpts, mags, phases, trapStart, trapEnd)
+        callback(stack_index, stackType, startTime, notes, fpts, mags, phases, trapStart, trapEnd)
 
     return stackType, startTime, notes, fpts, mags, phases
 
-def na_trap_sweep_plotter(stackType, startTime, notes, fpts, mags, phases, trapStart, trapEnd):
+def na_trap_sweep_plotter(stack_index, stackType, startTime, notes, fpts, mags, phases, trapStart, trapEnd):
     plt.subplot(121)
     midInd = len(mags)/2;
     plt.imshow(np.transpose(mags[:midInd+1]), aspect='auto', interpolation='none', cmap = 'gist_rainbow',

@@ -39,14 +39,22 @@ def get_alazar_single_f_resV_scan(cache, stack_index, iterator=None, done=None):
         rampHighs = cache.get(stack_prefix + rampKey + '.rampHighs')
         rampLows = cache.get(stack_prefix + rampKey + '.rampLows')
         if iterator != None:
-            iterator(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
+            iterator(stack_index, stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
     
     if done != None:
-        done(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
+        done(stack_index, stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs)
 
-    return stackType, startTime, notes, frequency, I, Q 
+    return stackType, startTime, notes, frequency, I, Q, resVs, rampHighs, rampLows
 
-def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs):
+def alazar_single_f_resV_scan_plotter(stack_index, stackType, startTime, notes, frequency, rampList, I, Q, rampHighs, rampLows, resVs, mags=None, phases=None):
+
+    if mags == None:
+        mags = np.sqrt(I**2 + Q**2)
+    if phases == None:
+        phases = []
+        for Irow, Qrow in zip(I, Q):
+            phases.append(map(util.phase, zip(Irow, Qrow)))
+        phases = np.array(phases)
 
     rampHigh = rampHighs[0]
     rampLow = rampLows[0]
@@ -70,12 +78,11 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.ylabel('resonator volt')
     plt.colorbar()
 
-    fig_name = r'./raw figures/({},{}), IQ voltage.png'.format(rampHigh, rampLow)
+    fig_name = r'./raw figures/{}_({},{}), IQ voltage.png'.format(stack_index, rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'wide')
     plt.show()
 
     plt.subplot(121)
-    mags = np.sqrt(I**2 + Q**2)
     plt.imshow(mags, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
     plt.title('Magnitude @ {:.4f}GHz'.format(float(frequency)/1e9))
@@ -86,10 +93,6 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.colorbar()
 
 
-    phases = []
-    for Irow, Qrow in zip(I, Q):
-        phases.append(map(util.phase, zip(Irow, Qrow)))
-    phases = np.array(phases)
     plt.subplot(122)
     plt.imshow(phases, aspect='auto', interpolation='none', origin = 'lower',
            extent = [rampHigh, 2*rampLow-rampHigh, resVs[0], resVs[-1]], cmap = 'YlOrRd')
@@ -100,7 +103,7 @@ def alazar_single_f_resV_scan_plotter(stackType, startTime, notes, frequency, ra
     plt.ylabel('resonator voltage (V)')
     plt.colorbar()
 
-    fig_name = r'./raw figures/({},{}), Mag Phase voltage.png'.format(rampHigh, rampLow)
+    fig_name = r'./raw figures/{}_({},{}), Mag Phase voltage.png'.format(stack_index, rampHigh, rampLow)
     dataanalysis.save_styled_fig(fig_name, 'wide')
     plt.show()
 
